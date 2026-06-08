@@ -2286,32 +2286,26 @@ function closeSummaryAndReset() {
 function captureScreen() {
   const card = document.querySelector('.summary-card');
   if (!card) { alert('暂无内容'); return; }
-  // 保存原始样式，然后解除所有高度限制让内容完全展开
-  const orig = {
-    maxHeight: card.style.maxHeight,
-    overflowY: card.style.overflowY,
-    overflow: card.style.overflow,
-    height: card.style.height,
-    position: card.style.position,
-    maxWidth: card.style.maxWidth
-  };
-  card.style.maxHeight = 'none';
-  card.style.overflowY = 'visible';
-  card.style.overflow = 'visible';
-  card.style.height = 'auto';
-  card.style.position = 'static';
-  card.style.maxWidth = 'none';
 
-  html2canvas(card, {
+  // 克隆卡片，脱离受约束的父容器，放到屏幕外完全展开
+  const clone = card.cloneNode(true);
+  clone.style.cssText = `
+    position: fixed; top: -9999px; left: 0; z-index: 99999;
+    max-height: none !important; max-width: ${card.offsetWidth}px !important;
+    height: auto !important; overflow: visible !important;
+    flex: none !important; min-height: auto !important;
+    border-radius: 20px;
+  `;
+  document.body.appendChild(clone);
+
+  html2canvas(clone, {
     backgroundColor: '#ffffff',
     scale: 2,
     useCORS: true,
-    logging: false,
-    windowWidth: card.scrollWidth,
-    windowHeight: card.scrollHeight
+    logging: false
   }).then(canvas => {
-    // 恢复原始样式
-    Object.assign(card.style, orig);
+    // 移除克隆
+    document.body.removeChild(clone);
     const fileName = '业务办理汇总_' + new Date().toISOString().slice(0,10) + '.png';
     const dataUrl = canvas.toDataURL('image/png');
     const ua = navigator.userAgent;
