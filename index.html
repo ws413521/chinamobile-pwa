@@ -2284,17 +2284,17 @@ function closeSummaryAndReset() {
 }
 
 function captureScreen() {
-  const card = document.querySelector('.summary-card');
-  if (!card) { alert('暂无内容'); return; }
+  const wrapper = document.querySelector('.summary-wrapper');
+  if (!wrapper) { alert('暂无内容'); return; }
+  const card = wrapper.querySelector('.summary-card');
   const origMaxH = card.style.maxHeight;
   const origOverflow = card.style.overflowY;
+  const origWrapperOverflow = wrapper.style.overflow;
   card.style.maxHeight = 'none';
   card.style.overflowY = 'visible';
-  const floatBtns = document.getElementById('summaryFloatBtns');
-  const capsule = document.getElementById('summaryHeaderCapsule');
-  if (floatBtns) floatBtns.style.display = 'none';
-  if (capsule) capsule.style.display = 'none';
-  html2canvas(card, {
+  wrapper.style.overflow = 'visible';
+  wrapper.style.maxHeight = 'none';
+  html2canvas(wrapper, {
     backgroundColor: '#ffffff',
     scale: 2,
     useCORS: true,
@@ -2302,8 +2302,8 @@ function captureScreen() {
   }).then(canvas => {
     card.style.maxHeight = origMaxH;
     card.style.overflowY = origOverflow;
-    if (floatBtns) floatBtns.style.display = '';
-    if (capsule) capsule.style.display = '';
+    wrapper.style.overflow = origWrapperOverflow;
+    wrapper.style.maxHeight = '';
     const fileName = '业务办理汇总_' + new Date().toISOString().slice(0,10) + '.png';
     const dataUrl = canvas.toDataURL('image/png');
     const ua = navigator.userAgent;
