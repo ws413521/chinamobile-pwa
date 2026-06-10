@@ -2092,7 +2092,7 @@ function buildSummary() {
     }
     if (state.bbType==='addon') {
       if (state.bbIsLocal) {
-        cards.push(card('手机号码', state.bbAddonNumber||'未填写'));
+        cards.push(card('手机号码', state.bbMainNumber||'未填写'));
         if (state.bbOriginPlan) cards.push(card('原套餐', state.bbOriginPlan));
         const addonSub = [...BB_SUB_500M,...BB_SUB_FTTR,...BB_SUB_F3].find(p=>p.id===state.bbPlan);
         if (addonSub) {
