@@ -2298,6 +2298,20 @@ function captureScreen() {
   `;
   document.body.appendChild(clone);
 
+  // 同步克隆体中所有 <select> 的选中值（cloneNode 不会复制动态状态）
+  const origSelects = card.querySelectorAll('select');
+  const cloneSelects = clone.querySelectorAll('select');
+  origSelects.forEach((sel, i) => {
+    if (cloneSelects[i]) cloneSelects[i].value = sel.value;
+  });
+
+  // 同步克隆体中所有 <input> 的值
+  const origInputs = card.querySelectorAll('input');
+  const cloneInputs = clone.querySelectorAll('input');
+  origInputs.forEach((inp, i) => {
+    if (cloneInputs[i]) cloneInputs[i].value = inp.value;
+  });
+
   html2canvas(clone, {
     backgroundColor: '#ffffff',
     scale: 2,
